@@ -23,8 +23,7 @@ file(MAKE_DIRECTORY "${NODESET_COMPILER_OUTPUT_DIR}")
 set(NODESET_COMPILER_OUTPUT_DIR "${CMAKE_BINARY_DIR}/src_generated")
 include_directories("${NODESET_COMPILER_OUTPUT_DIR}")
 
-set(INFORMATION_MODEL_DIR ${PROJECT_SOURCE_DIR}/../InformationModels)
-set(INFORMATION_MODEL_DIR ${PROJECT_SOURCE_DIR}/../InformationModels)
+set(INFORMATION_MODEL_DIR ${PROJECT_SOURCE_DIR}/../../model)
 ua_generate_nodeset_and_datatypes(
         NAME "common"
         FILE_BSD "${INFORMATION_MODEL_DIR}/SWAP.Fraunhofer.Common.Model.Types.bsd"

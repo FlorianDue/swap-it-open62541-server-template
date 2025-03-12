@@ -20,7 +20,7 @@ endif()
 file(MAKE_DIRECTORY "${GENERATE_OUTPUT_DIR}")
 set(GENERATE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/src_generated/")
 include_directories("${GENERATE_OUTPUT_DIR}")
-set(INFORMATION_MODEL_DIR ${PROJECT_SOURCE_DIR}/Information_Models)
+set(INFORMATION_MODEL_DIR ${PROJECT_SOURCE_DIR}/model)
 
 ua_generate_nodeset_and_datatypes(
         NAME "common"

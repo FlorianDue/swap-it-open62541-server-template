@@ -15,7 +15,7 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(PROJECT_BINARY_DIR ${CMAKE_BINARY_DIR})
 endif()
 #define the path to the directory in which the
-set(PATH_TO_INFORMATION_MODELS ${PROJECT_SOURCE_DIR}/model)
+set(PATH_TO_INFORMATION_MODELS ${PROJECT_SOURCE_DIR}/../model)
 #set output directory
 set(GENERATE_OUTPUT_DIR "${CMAKE_BINARY_DIR}/src_generated/")
 include_directories("${GENERATE_OUTPUT_DIR}")

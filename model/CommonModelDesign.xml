@@ -208,6 +208,8 @@ Copyright 2023-2024 (c) Fraunhofer IOSB (Author: Florian Düwel)
       </Method>
       <Method SymbolicName="cmn:remove_queue_element" TypeDefinition="cmn:RemoveFromQueueMethodType">
       </Method>
+      <Method SymbolicName="cmn:move_queue_elements" TypeDefinition="cmn:MoveQueueElementsMethodType">
+      </Method>
       <!--Method SymbolicName="cmn:set_queue_element_state" TypeDefinition="cmn:SetStateMethodType">
       </Method-->
     </Children>
@@ -298,6 +300,14 @@ Copyright 2023-2024 (c) Fraunhofer IOSB (Author: Florian Düwel)
     <InputArguments>
       <Argument Name="remove_element" DataType="cmn:Queue_Data_Type" ModellingRule="Mandatory">
         <Descriptions>Url and Port of the Device Regsitry the Agent shall unregister from. The Argument Format is ip_address:port, e.g. 0.0.0.0:4840 </Descriptions>
+      </Argument>
+    </InputArguments>
+  </Method>
+
+  <Method SymbolicName="cmn:MoveQueueElementsMethodType">
+    <InputArguments>
+      <Argument Name="priorization_list" DataType="ua:String" ModellingRule="Mandatory" ValueRank="Array">
+        <Descriptions>List, where each element contains a string prioritization value and a string ProductId, which is compared to the Queue_Data_Type's ProductId</Descriptions>
       </Argument>
     </InputArguments>
   </Method>
