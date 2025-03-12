@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UA_server_swap_it &mdash; SWAP-IT-open62541-server-template 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Register and Unregister Methods" href="register.html" />
+    <link rel="prev" title="Utility Functions" href="util.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SWAP-IT-open62541-server-template
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="informationmodels.html">Information Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON Configuration</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="util.html">Utility Functions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">UA_server_swap_it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clear-swap-server">clear_swap_server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="register.html">Register and Unregister Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module.html">Instantiate Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html">Queue Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="browse_module.html">Browse ModuleType Instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interpret_conf.html">Interpret Server Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="swap-it-architecture.html">SWAP-IT Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="related_projects.html">Related-Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SWAP-IT-open62541-server-template</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="util.html">Utility Functions</a></li>
+      <li class="breadcrumb-item active">UA_server_swap_it</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ua_swap_it.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ua-server-swap-it">
+<h1>UA_server_swap_it<a class="headerlink" href="#ua-server-swap-it" title="Link to this heading"></a></h1>
+<p>Instantiates the SubType of the ModuleType as configured in the JSON file. All functionalities, such as the <a class="reference internal" href="register.html#register-and-unregister-methods"><span class="std std-ref">Register and Unregister Methods</span></a>,
+the <a class="reference internal" href="queue.html#queue-handler"><span class="std std-ref">Queue Handler</span></a> and the ServiceMethod callback are created in accordance, so that an automated configuration of the server for the SWAP-IT software is accomplished.
+<strong>Important Note</strong>: The open62541 server template includes the Common Information Model, however if additional custom information models are required, the must be loaded into the server before invoking
+the UA_server_swap_it function.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * Method Arguments:</span>
+<span class="cm"> * UA_Server *server:                           the server instance</span>
+<span class="cm"> * UA_ByteString json                           json configuration of the server</span>
+<span class="cm"> * UA_MethodCallback callback:                  callback of for the service method</span>
+<span class="cm"> * UA_Boolean default_behavior:                 boolean that determines whether a default information</span>
+<span class="cm"> *                                              model will be instantiated based on the json configuration</span>
+<span class="cm"> * UA_Boolean *running:                         running variable from the server&#39;s main function</span>
+<span class="cm"> * UA_Boolean register_agent_in_registry:       Boolean that determines whether the Asset should register itself in a device registry</span>
+<span class="cm"> * UA_service_server_interpreter *swap_server   Empty structure that stores the interpreted json configuration. The stucture is filled</span>
+<span class="cm"> *                                              when interpreting the json config within the function and can then be used for the function</span>
+<span class="cm"> *                                              clear_swap_server</span>
+<span class="cm"> * */</span>
+
+
+<span class="n">UA_StatusCode</span><span class="w"> </span><span class="nf">UA_server_swap_it</span><span class="p">(</span><span class="n">UA_Server</span><span class="w"> </span><span class="o">*</span><span class="n">server</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_ByteString</span><span class="w"> </span><span class="n">json</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_MethodCallback</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_Boolean</span><span class="w"> </span><span class="n">default_behavior</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_Boolean</span><span class="w"> </span><span class="o">*</span><span class="n">running</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_Boolean</span><span class="w"> </span><span class="n">register_agent_in_registry</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">UA_service_server_interpreter</span><span class="w"> </span><span class="o">*</span><span class="n">swap_server</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="clear-swap-server">
+<h1>clear_swap_server<a class="headerlink" href="#clear-swap-server" title="Link to this heading"></a></h1>
+<p>Function that clears the swap server and in addition, can be used to unregister the server from a device registry</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm"> * UA_service_server_interpreter *server_info       Filled structure from the function UA_server_swap_it</span>
+<span class="cm"> * UA_Boolean unregister                            Boolean value that determines whether the server should</span>
+<span class="cm"> *                                                  unregister itself from the device registry</span>
+<span class="cm"> * UA_Server *server                                the server instance</span>
+<span class="cm"> */</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">clear_swap_server</span><span class="p">(</span><span class="n">UA_service_server_interpreter</span><span class="w"> </span><span class="o">*</span><span class="n">server_info</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">UA_Boolean</span><span class="w"> </span><span class="n">unregister</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">UA_Server</span><span class="w"> </span><span class="o">*</span><span class="n">server</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="util.html" class="btn btn-neutral float-left" title="Utility Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="register.html" class="btn btn-neutral float-right" title="Register and Unregister Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Fraunhofer IOSB Author (Florian Düwel).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
