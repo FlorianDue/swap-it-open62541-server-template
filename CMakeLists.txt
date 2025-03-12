@@ -32,8 +32,8 @@ ua_generate_nodeset_and_datatypes(
         INTERNAL
 )
 
-set(PATH_TO_HEADERS  ${PROJECT_SOURCE_DIR}/deps/template/include)
-set(PATH_TO_C_FILES ${PROJECT_SOURCE_DIR}/deps/template/src)
+set(PATH_TO_HEADERS  ${PROJECT_SOURCE_DIR}/deps/include)
+set(PATH_TO_C_FILES ${PROJECT_SOURCE_DIR}/deps/src)
 
 set(exported_headers
         ${PATH_TO_HEADERS}/server_internal.h

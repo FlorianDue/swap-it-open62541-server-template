@@ -58,7 +58,7 @@ ua_generate_nodeset_and_datatypes(
         INTERNAL
 )
 
-set(Path_TO_TEMPLATE "${PROJECT_SOURCE_DIR}/../../deps/template/src")
+set(Path_TO_TEMPLATE "${PROJECT_SOURCE_DIR}/../../deps/src")
 add_executable(tests
         ../deps/service_callbacks.c
         ../check_server_template.c
