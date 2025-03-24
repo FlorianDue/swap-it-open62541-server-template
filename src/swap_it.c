@@ -8,7 +8,9 @@
  */
 
 #include "swap_it.h"
-#include "queue_handler.h"
+#include "../include/queue/queue_handler.h"
+#include "../include/queue/write_queue.h"
+//#include "queue_handler.h"
 #include "register_callbacks.h"
 #include "server_internal.h"
 #include "node_finder.h"
