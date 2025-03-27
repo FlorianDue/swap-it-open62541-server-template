@@ -1,7 +1,6 @@
 cmake-build-debug/
 documentation/build
 build
-tests/todo.txt
 tests/cmake-build-ubuntu_22
 tests/cmake-build-ubuntu_22-coverage
 .idea

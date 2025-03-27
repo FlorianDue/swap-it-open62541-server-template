@@ -3,28 +3,29 @@ The swap server template provides a utility function UA_server_swap_it() which c
 server compatible with the SWAP-IT architecture.
 
 
-    /*
-    * Method Arguments:
-    * UA_Server *server:                           the server instance
-    * UA_ByteString json                           json configuration of the server
-    * UA_MethodCallback callback:                  callback of for the service method
-    * UA_Boolean default_behavior:                 boolean that determines whether a default information
-    *                                              model will be instantiated based on the json configuration
-    * UA_Boolean *running:                         running variable from the server's main function
-    * UA_Boolean register_agent_in_registry:       Boolean that determines whether the Asset should register itself in a swap-it-registry-module
-    * UA_service_server_interpreter *swap_server   Empty structure that stores the interpreted json configuration. The stucture is filled
-    *                                              when interpreting the json config within the function and can then be used for the function
-    *                                              clear_swap_server
-    */
-
-
-    UA_StatusCode UA_server_swap_it(UA_Server *server,
-        UA_ByteString json,
-        UA_MethodCallback callback,
-        UA_Boolean default_behavior,
-        UA_Boolean *running,
-        UA_Boolean register_agent_in_registry,
-        UA_service_server_interpreter *swap_server);
+        /*
+        * Method Arguments:
+        * UA_Server *server:                           the server instance
+        * UA_ByteString json                           json configuration of the server
+        * UA_MethodCallback callback:                  callback of for the service method
+        * UA_Boolean default_behavior:                 boolean that determines whether a default information
+        *                                              model will be instantiated based on the json configuration
+        * UA_Boolean *running:                         running variable from the server's main function
+        * UA_Boolean register_agent_in_registry:       Boolean that determines whether the Asset should register itself in a device registry
+        * UA_service_server_interpreter *swap_server   Empty structure that stores the interpreted json configuration. The stucture is filled
+        *                                              when interpreting the json config within the function and can then be used for the function
+        *                                              clear_swap_server
+        * UA_Queue_Data *queue_data                     structure for the queue interaction
+        */
+        
+        UA_StatusCode UA_server_swap_it(UA_Server *server,
+                                        UA_ByteString json,
+                                        UA_MethodCallback callback,
+                                        UA_Boolean default_behavior,
+                                        UA_Boolean *running,
+                                        UA_Boolean register_agent_in_registry,
+                                        UA_service_server_interpreter *swap_server,
+                                        UA_Queue_Data *queue_data);
 
 
 An extensive documentation of the swap-it-open62541-server-template can be found here: https://fraunhoferiosb.github.io/swap-it-open62541-server-template
