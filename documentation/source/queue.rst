@@ -11,20 +11,22 @@
 Queue Handler
 =============
 
-The open62541 server template includes a Queue Object and provides a corresponding functionality which adds or removes queue entries to the queue_variable based on tge
-method calls add_queue_element and remove_queue_element. Since the queue handler operates in a separate thread, the boolean running variable
-of the server's main loop has to be passed to this thread, so that it terminates when the server shuts down.
+The open62541 server template includes a Queue Object that defines a **read-only** *queue_variable*, as well as a set of methods to interact with it. The *add_queue_element* and the
+*remove_queue_element* methods can be used to add or remove entries to or from the queue list respectively. The *set_queue_element_state* changes the state of a single queue element.
+To change the position of a single queue element, e.g., move it upwards or downwards within the queue list, the *move_queue_element*. With the *sort_queue_elements* methods, the complete queue can be adjusted,
+by providing a prioritization list, that includes an *orderId* and a *prioritization value*. The lower the prioritization value for an order, the higher the position of the element in the sorted queue. Elements that do
+not provide prioritization value are added to the end of the queue, after the elements, which provide one.
+
 
 .. figure:: /images/queue.PNG
-   :alt: alternate textgit
+   :alt: alternate text
+   :width: 50%
 
 .. code-block:: c
 
     /* Arguments:
      * UA_Server *server: server instance
-     * UA_NodeId module_object_nodeId: NodeId of the instance of the Instance of the ModuleType
-     * UA_Boolean *running: Pointer to the server's running variable to shut down the thread
+     * UA_Queue_Data *queue_data: queue data structure defined in
      */
-    UA_StatusCode start_queue_handler(UA_Server *server,
-                                      UA_NodeId module_object_nodeId,
-                                      UA_Boolean *running);
+    UA_StatusCode init_queue_data(UA_Server *server,
+                                  UA_Queue_Data *queue_data);

@@ -68,7 +68,7 @@ The capabilities specified within the JSON configuration are linked to the Capab
 defines an abstract Capability_Data_Type, as well as three non abstract subtypes:
 
 - Capability_Struct_Boolean: a boolean value will be added with the "IsTrue" and "IsFalse" as possible relational operators. The variable_type field has to be set to "bool".
-- Capability_Struct_String: a string value will be added with "StringEqual" as relational operator. The variable_type field has to be set to "string".
+- Capability_Struct_String: a string value will be added with "EqualString" as relational operator. The variable_type field has to be set to "string".
 - Capability-Struct_Number: a double value will be added with relational operators: "Equal", "Greater", "Smaller", "GreaterOrEqual", "SmallerOrEqual". The variable_type field has to be set to "numeric".
 
 Each capability element is characterized by a:
