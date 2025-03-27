@@ -5,7 +5,7 @@
  *
  * Copyright 2023-2024 (c) Fraunhofer IOSB (Author: Florian Düwel)
  */
-#include "write_queue.h"
+#include "queue_handler.h"
 #include "stdio.h"
 
 static UA_StatusCode readQueue(UA_Server *server,

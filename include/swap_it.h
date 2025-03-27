@@ -14,7 +14,7 @@
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include "config_interpreter.h"
-#include "write_queue.h"
+#include "queue_handler.h"
 
 /*
  * Method Arguments:

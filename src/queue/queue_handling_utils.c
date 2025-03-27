@@ -6,7 +6,7 @@
  * Copyright 2023-2024 (c) Fraunhofer IOSB (Author: Florian Düwel)
  */
 
-#include "queue_method_handler.h"
+#include "queue_handling_utils.h"
 #include "stdio.h"
 
 void create_queue_from_linked_list(UA_Queue_Data *queue_handler_list){

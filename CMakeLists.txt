@@ -35,6 +35,9 @@ set(PATH_TO_C_FILES ${PROJECT_SOURCE_DIR}/src/)
 set(PATH_TO_DEPS ${PROJECT_SOURCE_DIR}/deps/)
 
 set(exported_headers
+        ${PATH_TO_DEPS}/parse_num.h
+        ${PATH_TO_DEPS}/cj5.h
+        ${PATH_TO_DEPS}/open62541_queue.h
         ${PATH_TO_HEADERS}/server_internal.h
         ${PATH_TO_HEADERS}/node_finder.h
         ${PATH_TO_HEADERS}/config_interpreter.h
@@ -42,9 +45,6 @@ set(exported_headers
         ${PATH_TO_HEADERS}/queue/queue_handler.h
         ${PATH_TO_HEADERS}/queue/queue_handling_utils.h
         ${PATH_TO_HEADERS}/register_callbacks.h
-        ${PATH_TO_DEPS}/parse_num.h
-        ${PATH_TO_DEPS}/cj5.h
-        ${PATH_TO_DEPS}/open62541_queue.h
         ${PATH_TO_DEPS}/common.h
         ${PATH_TO_HEADERS}/swap_it.h
         ${GENERATE_OUTPUT_DIR}/types_common_generated.h
@@ -83,6 +83,7 @@ endforeach()
 
 configure_file(swap_server_template.pc.in swap_server_template.pc @ONLY)
 target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/deps)
 target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/include/queue)
 
 install(TARGETS swap_server_template
