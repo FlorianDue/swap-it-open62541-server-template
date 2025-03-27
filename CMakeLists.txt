@@ -10,8 +10,6 @@ cmake_minimum_required(VERSION 3.0.0)
 project(swap_server_template VERSION 1.0.0 DESCRIPTION "Library to make open62541 server compatible with Process Agents")
 find_package(open62541 1.3 REQUIRED)
 
-
-
 if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # needed or cmake doesn't recognize dependencies of generated files
     set(PROJECT_BINARY_DIR ${CMAKE_BINARY_DIR})
@@ -32,17 +30,22 @@ ua_generate_nodeset_and_datatypes(
         INTERNAL
 )
 
-set(PATH_TO_HEADERS  ${PROJECT_SOURCE_DIR}/deps/include)
-set(PATH_TO_C_FILES ${PROJECT_SOURCE_DIR}/deps/src)
+set(PATH_TO_HEADERS  ${PROJECT_SOURCE_DIR}/include/)
+set(PATH_TO_C_FILES ${PROJECT_SOURCE_DIR}/src/)
+set(PATH_TO_DEPS ${PROJECT_SOURCE_DIR}/deps/)
 
 set(exported_headers
         ${PATH_TO_HEADERS}/server_internal.h
         ${PATH_TO_HEADERS}/node_finder.h
         ${PATH_TO_HEADERS}/config_interpreter.h
-        ${PATH_TO_HEADERS}/queue_handler.h
+        ${PATH_TO_HEADERS}/queue/queue_method_callbacks.h
+        ${PATH_TO_HEADERS}/queue/queue_handler.h
+        ${PATH_TO_HEADERS}/queue/queue_handling_utils.h
         ${PATH_TO_HEADERS}/register_callbacks.h
-        ${PATH_TO_HEADERS}/parse_num.h
-        ${PATH_TO_HEADERS}/cj5.h
+        ${PATH_TO_DEPS}/parse_num.h
+        ${PATH_TO_DEPS}/cj5.h
+        ${PATH_TO_DEPS}/open62541_queue.h
+        ${PATH_TO_DEPS}/common.h
         ${PATH_TO_HEADERS}/swap_it.h
         ${GENERATE_OUTPUT_DIR}/types_common_generated.h
         ${GENERATE_OUTPUT_DIR}/types_common_generated_handling.h
@@ -52,17 +55,19 @@ set(exported_headers
 #src: https://stackoverflow.com/questions/17511496/how-to-create-a-shared-library-with-cmake, last checked on 07.11.2023:16.17
 include(GNUInstallDirs)
 add_library(swap_server_template SHARED
-        ${PATH_TO_C_FILES}/swap_it.c
         ${PATH_TO_C_FILES}/config_interpreter.c
         ${PATH_TO_C_FILES}/node_finder.c
-        ${PATH_TO_C_FILES}/queue_handler.c
+        ${PATH_TO_C_FILES}/queue/queue_method_callbacks.c
+        ${PATH_TO_C_FILES}/queue/queue_handler.c
+        ${PATH_TO_C_FILES}/queue/queue_handling_utils.c
         ${PATH_TO_C_FILES}/register_callbacks.c
         ${PATH_TO_C_FILES}/server_internal.c
-        ${PATH_TO_C_FILES}/cj5.c
-        ${PATH_TO_C_FILES}/parse_num.c
+        ${PATH_TO_DEPS}/cj5.c
+        ${PATH_TO_DEPS}/parse_num.c
         ${UA_NODESET_COMMON_SOURCES}
         ${UA_TYPES_COMMON_SOURCES}
-          )
+        ${PATH_TO_C_FILES}/swap_it.c
+)
 
 add_library(swap_server_template::swap_server_template ALIAS swap_server_template)
 set_target_properties(swap_server_template PROPERTIES
@@ -77,7 +82,9 @@ foreach ( file ${FILES_TO_INSTALL} )
 endforeach()
 
 configure_file(swap_server_template.pc.in swap_server_template.pc @ONLY)
-target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/deps/template/include)
+target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(swap_server_template PRIVATE ${PROJECT_SOURCE_DIR}/include/queue)
+
 install(TARGETS swap_server_template
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

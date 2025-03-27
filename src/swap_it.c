@@ -8,9 +8,6 @@
  */
 
 #include "swap_it.h"
-#include "../include/queue/queue_handler.h"
-#include "../include/queue/write_queue.h"
-//#include "queue_handler.h"
 #include "register_callbacks.h"
 #include "server_internal.h"
 #include "node_finder.h"
@@ -24,12 +21,13 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
                                 UA_Boolean default_behavior,
                                 UA_Boolean *running,
                                 UA_Boolean register_agent_in_registry,
-                                UA_service_server_interpreter *swap_server){
+                                UA_service_server_interpreter *swap_server,
+                                UA_Queue_Data *queue_data){
 
     UA_StatusCode retval = get_server_dict(swap_server, json);
     if(retval != UA_STATUSCODE_GOOD) {
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to add the SWAP Configuration with Statuscode %s.", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         return retval;
     }
 
@@ -51,7 +49,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = instantiate_module_type(server, swap_server, &module_object_nodeId);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to add the ModuleType with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&module_object_nodeId);
         return retval;
     }
@@ -59,7 +57,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = add_method_callback(server, swap_server, callback);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to link the Methodcallback with the Method Node with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&module_object_nodeId);
         return retval;
     }
@@ -72,7 +70,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = add_register_methods(server, &register_function_id, &unregister_function_id);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to link the register/unregister Methods with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&register_function_id);
         UA_NodeId_clear(&unregister_function_id);
         UA_NodeId_clear(&module_object_nodeId);
@@ -91,7 +89,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = write_state_variable(server);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to write the state variable with Statuscode %s.", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&register_function_id);
         UA_NodeId_clear(&unregister_function_id);
         UA_NodeId_clear(&module_object_nodeId);
@@ -102,7 +100,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = add_subscription_objects(server, swap_server, module_object_nodeId);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to link the register/unregister Methods with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&register_function_id);
         UA_NodeId_clear(&unregister_function_id);
         UA_NodeId_clear(&module_object_nodeId);
@@ -113,7 +111,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     retval = add_capability_nodes(server, swap_server, module_object_nodeId);
     if(retval != UA_STATUSCODE_GOOD){
         UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to add the capabilities variables with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-        clear_swap_server(swap_server, UA_FALSE, server);
+        clear_swap_server(swap_server, UA_FALSE, server, queue_data);
         UA_NodeId_clear(&register_function_id);
         UA_NodeId_clear(&unregister_function_id);
         UA_NodeId_clear(&module_object_nodeId);
@@ -121,7 +119,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
     }
     UA_Server_run_iterate(server, true);
     //activate queue handler
-    start_queue_handler(server, module_object_nodeId, running);
+    init_queue_data(server, queue_data);
     UA_Server_run_iterate(server, true);
     //register the agent
     if(register_agent_in_registry == UA_TRUE){
@@ -139,7 +137,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
             UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
                          "Failed to write the registered variable to false with Statuscode %s. Please check previous output",
                          UA_StatusCode_name(retval));
-            clear_swap_server(swap_server, UA_FALSE, server);
+            clear_swap_server(swap_server, UA_FALSE, server, queue_data);
             UA_NodeId_clear(&register_function_id);
             UA_NodeId_clear(&unregister_function_id);
             UA_NodeId_clear(&module_object_nodeId);
@@ -150,7 +148,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
         retval = write_registered_variable(server, UA_FALSE);
         if(retval != UA_STATUSCODE_GOOD){
             UA_LOG_ERROR(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Failed to write the registered variable to false with Statuscode %s. Please check previous output", UA_StatusCode_name(retval));
-            clear_swap_server(swap_server, UA_TRUE, server);
+            clear_swap_server(swap_server, UA_TRUE, server, queue_data);
             UA_NodeId_clear(&register_function_id);
             UA_NodeId_clear(&unregister_function_id);
             UA_NodeId_clear(&module_object_nodeId);
@@ -166,7 +164,7 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
 
 
 /*todo remove the instatiated subtype of the module type, add boolean clear method context and remove module type*/
-void clear_swap_server(UA_service_server_interpreter *server_info, UA_Boolean unregister, UA_Server *server){
+void clear_swap_server(UA_service_server_interpreter *server_info, UA_Boolean unregister, UA_Server *server, UA_Queue_Data *queue_data){
     if(unregister == UA_TRUE){
         UA_Register_function_Input_data *unregister = (UA_Register_function_Input_data*) UA_calloc(1, sizeof(UA_Register_function_Input_data));
         unregister->service_name = UA_String_fromChars(server_info->service_name);
@@ -206,4 +204,16 @@ void clear_swap_server(UA_service_server_interpreter *server_info, UA_Boolean un
     free(server_info->capabilities);
     server_info->nbr_registry_subscriptions = 0;
     server_info->nbr_capabilities = 0;
+    /*free allocated memory from the queue data*/
+    for(size_t i =0; i< queue_data->queue_size; i++){
+    	UA_Queue_Data_Type_clear(&queue_data->queue[i]);
+    }
+    if(queue_data->queue_size > 0)
+        free(queue_data->queue);
+    UA_Array_delete(queue_data->prioritization_list, queue_data->priorization_list_size, &UA_TYPES_COMMON[UA_TYPES_COMMON_CHANGE_QUEUE_DATA_TYPE]);
+    UA_Queue_List_Element *current, *next_element;
+    SLIST_FOREACH_SAFE(current, &queue_data->queue_element_list, next, next_element){
+        UA_Queue_Data_Type_clear(&current->queue_element);
+        free(current);
+    }
 }

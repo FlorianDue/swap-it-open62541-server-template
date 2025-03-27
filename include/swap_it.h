@@ -14,6 +14,7 @@
 #include <open62541/server.h>
 #include <open62541/server_config_default.h>
 #include "config_interpreter.h"
+#include "write_queue.h"
 
 /*
  * Method Arguments:
@@ -27,6 +28,7 @@
  * UA_service_server_interpreter *swap_server   Empty structure that stores the interpreted json configuration. The stucture is filled
  *                                              when interpreting the json config within the function and can then be used for the function
  *                                              clear_swap_server
+ * UA_Queue_Data *queue_data                     structure for the queue interaction
 */
 
 UA_StatusCode UA_server_swap_it(UA_Server *server,
@@ -35,15 +37,20 @@ UA_StatusCode UA_server_swap_it(UA_Server *server,
                                 UA_Boolean default_behavior,
                                 UA_Boolean *running,
                                 UA_Boolean register_agent_in_registry,
-                                UA_service_server_interpreter *swap_server);
+                                UA_service_server_interpreter *swap_server,
+                                UA_Queue_Data *queue_data);
 
 /*
  * UA_service_server_interpreter *server_info       Filled structure from the function UA_server_swap_it
  * UA_Boolean unregister                            Boolean value that determines whether the server should
  *                                                  unregister itself from the device registry
  * UA_Server *server                                the server instance
+ * UA_Queue_Data *queue_data                        structure from the queue interaction
 */
 
-void clear_swap_server(UA_service_server_interpreter *server_info, UA_Boolean unregister, UA_Server *server);
+void clear_swap_server(UA_service_server_interpreter *server_info,
+                       UA_Boolean unregister,
+                       UA_Server *server,
+                       UA_Queue_Data *queue_data);
 
 #endif //SWAP_TEMPLATE_UTILITY_FUNCTION_SWAP_IT_H
