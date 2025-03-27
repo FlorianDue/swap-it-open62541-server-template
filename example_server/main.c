@@ -21,6 +21,11 @@
 #include "types_common_generated_handling.h"
 #include "warehouse_nodeids.h"
 
+UA_Boolean running = true;
+static void stopHandler(int sign) {
+    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "received ctrl-c");
+    running = false;
+}
 
 UA_StatusCode warehousemethodCallback(UA_Server *server,
                                       const UA_NodeId *sessionId, void *sessionHandle,
@@ -49,12 +54,6 @@ UA_StatusCode warehousemethodCallback(UA_Server *server,
     UA_Variant_setScalarCopy(output, &res, &UA_TYPES_COMMON[UA_TYPES_COMMON_SERVICEEXECUTIONASYNCRESULTDATATYPE]);
     UA_String_clear(&res.serviceResultMessage);
     return UA_STATUSCODE_GOOD;
-}
-
-UA_Boolean running = true;
-static void stopHandler(int sign) {
-    UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "received ctrl-c");
-    running = false;
 }
 
 int main() {
@@ -110,17 +109,19 @@ int main() {
      * from the json configration*/
     UA_service_server_interpreter swap_server;
     memset(&swap_server, 0, sizeof(UA_service_server_interpreter));
-    /* with the function UA_server_swap_it from the open62541 servre templat,
+    /* with the function UA_server_swap_it from the open62541 server template,
      * it is possible to configure the OPC UA server with a single function call*/
-    UA_server_swap_it(server, conf, warehousemethodCallback, UA_FALSE, &running, UA_FALSE, &swap_server);
+    UA_Queue_Data queue_data;
+    memset(&queue_data, 0, sizeof(UA_Queue_Data));
+    UA_server_swap_it(server, conf, warehousemethodCallback, UA_FALSE, &running, UA_FALSE, &swap_server, &queue_data);
     UA_ByteString_clear(&conf);
     /*run the server*/
     while(running) {
         UA_Server_run_iterate(server, true);
     }
     //clear memory
-    clear_swap_server(&swap_server, UA_FALSE, server);
     UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,"Shutting down server %s ", swap_server.server_name);
+    clear_swap_server(&swap_server, UA_FALSE, server, &queue_data);
     /*Shut down the server*/
     UA_Server_run_shutdown(server);
     UA_Server_delete(server);

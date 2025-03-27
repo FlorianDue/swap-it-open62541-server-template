@@ -63,7 +63,7 @@ add_executable(example_server
         ${UA_NODESET_WAREHOUSE_SOURCES}
         ${UA_TYPES_WAREHOUSE_SOURCES}
 )
-#add the dependencies between the beginner tutorial and the generated namspaces
+#add the dependencies between the beginner tutorial and the generated namespaces
 add_dependencies(example_server open62541-generator-ns-common
         open62541-generator-ns-pfdl_parameter
         open62541-generator-ns-warehouse
