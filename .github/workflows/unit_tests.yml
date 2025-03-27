@@ -37,6 +37,8 @@ jobs:
           sudo make install
           cd ..
           sudo rm -rf deps
+          sudo rm -rf src
+          sudo rm -rf include
           sudo rm -rf build
           sudo rm -rf documentation
           sudo rm -rf Information_Models

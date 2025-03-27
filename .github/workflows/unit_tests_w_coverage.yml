@@ -58,10 +58,13 @@ jobs:
         with:
           gcov: true
           gcov_include: node_finder.c
-                        queue_handler.c
+                        config_interpreter.c
                         register_callbacks.c
                         server_internal.c
                         swap_it.c
+                        queue_handler.c
+                        queue_handling_utils.c
+                        queue_method_callbacks.c
 
 
           token: ${{ secrets.CODECOV_TOKEN }}
