@@ -58,7 +58,7 @@ ua_generate_nodeset_and_datatypes(
         INTERNAL
 )
 
-set(Path_TO_TEMPLATE "${PROJECT_SOURCE_DIR}/../../deps/src")
+set(Path_TO_TEMPLATE "${PROJECT_SOURCE_DIR}/../../src")
 add_executable(tests
         ../deps/service_callbacks.c
         ../check_server_template.c
@@ -67,7 +67,9 @@ add_executable(tests
         ${Path_TO_TEMPLATE}/config_interpreter.c
         ${Path_TO_TEMPLATE}/server_internal.c
         ${Path_TO_TEMPLATE}/register_callbacks.c
-        ${Path_TO_TEMPLATE}/queue_handler.c
+        ${Path_TO_TEMPLATE}/queue/queue_handler.c
+        ${Path_TO_TEMPLATE}/queue/queue_handling_utils.c
+        ${Path_TO_TEMPLATE}/queue/queue_method_callbacks.c
         ${UA_NODESET_PFDL_PARAMETER_SOURCES}
         ${UA_TYPES_PFDL_PARAMETER_SOURCES}
         ${UA_NODESET_COMMON_SOURCES}

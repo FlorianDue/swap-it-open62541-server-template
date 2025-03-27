@@ -93,7 +93,9 @@ START_TEST(empty_config){
     /*instantiate the warehousemoduletype*/
     UA_Server *server = UA_Server_new();
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    UA_StatusCode retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    memset(&queue_data, 0, sizeof(UA_Queue_Data));
+    UA_StatusCode retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval != UA_STATUSCODE_GOOD);
     UA_Server_run_shutdown(server);
     UA_Server_delete(server);
@@ -141,7 +143,8 @@ START_TEST(check_object_instances){
     /*instantiate the warehousemoduletype*/
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
     /*browse the intatiated objects */
-    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
 
     UA_Variant value;
@@ -212,7 +215,7 @@ START_TEST(check_object_instances){
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(server, NULL);
-    clear_swap_server(swap_server, UA_FALSE, server);
+    clear_swap_server(swap_server, UA_FALSE, server, &queue_data);
     UA_Server_run_shutdown(server);
     UA_Server_delete(server);
     free(swap_server);
@@ -432,7 +435,8 @@ START_TEST(check_register_callbacks_from_client){
     UA_ByteString json = UA_String_fromChars(correct_config);
     /*instantiate the warehousemoduletype*/
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
 
     pthread_t threadId_2;
@@ -446,7 +450,7 @@ START_TEST(check_register_callbacks_from_client){
     while(server_running)
         UA_Server_run_iterate(new_server, NULL);
 
-    clear_swap_server(swap_server, UA_FALSE, new_server);
+    clear_swap_server(swap_server, UA_FALSE, new_server, &queue_data);
     UA_Server_run_shutdown(new_server);
     UA_Server_delete(new_server);
     free(swap_server);
@@ -470,14 +474,15 @@ START_TEST(check_register_callbacks_from_config){
     ck_assert(retval == UA_STATUSCODE_GOOD);
     UA_ByteString json = UA_String_fromChars(correct_config);
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_TRUE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_TRUE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
     pthread_t threadId_test2;
     unsigned int time = 25;
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(new_server, NULL);
-    clear_swap_server(swap_server, UA_TRUE, new_server);
+    clear_swap_server(swap_server, UA_TRUE, new_server, &queue_data);
     UA_Server_run_shutdown(new_server);
     UA_Server_delete(new_server);
     free(swap_server);
@@ -498,7 +503,8 @@ START_TEST(check_register_callbacks_from_config_without_dr){
     ck_assert(retval == UA_STATUSCODE_GOOD);
     UA_ByteString json = UA_String_fromChars(config_min);
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_TRUE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_TRUE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
 
     pthread_t threadId_test2;
@@ -506,7 +512,7 @@ START_TEST(check_register_callbacks_from_config_without_dr){
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(new_server, NULL);
-    clear_swap_server(swap_server, UA_TRUE, new_server);
+    clear_swap_server(swap_server, UA_TRUE, new_server, &queue_data);
     UA_Server_run_shutdown(new_server);
     UA_Server_delete(new_server);
     free(swap_server);
@@ -554,7 +560,8 @@ START_TEST(check_service_method_call){
     /*instantiate the warehousemoduletype*/
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
     /*browse the intatiated objects */
-    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
 
     pthread_t threadId;
@@ -564,7 +571,7 @@ START_TEST(check_service_method_call){
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(server, NULL);
-    clear_swap_server(swap_server, UA_FALSE, server);
+    clear_swap_server(swap_server, UA_FALSE, server, &queue_data);
     UA_Server_run_shutdown(server);
     UA_Server_delete(server);
     free(swap_server);
@@ -586,14 +593,15 @@ START_TEST(load_swap_it_module){
     UA_ByteString json = UA_String_fromChars(correct_config);
     /*instantiate the warehousemoduletype*/
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
     pthread_t threadId_test2;
     unsigned int time = 10;
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(server, NULL);
-    clear_swap_server(swap_server, UA_FALSE, server);
+    clear_swap_server(swap_server, UA_FALSE, server, &queue_data);
     UA_Server_run_shutdown(server);
     UA_Server_delete(server);
     free(swap_server);
@@ -634,13 +642,13 @@ void *client_check_queue(void *data){
     UA_Queue_Data_Type queue_element_1;
     UA_Queue_Data_Type_init(&queue_element_1);
     queue_element_1.client_Identifier = UA_String_fromChars("Test_Client");
-    queue_element_1.productId = UA_String_fromChars("Test_Product");
+    queue_element_1.orderId = UA_String_fromChars("Test_Product");
     queue_element_1.service_UUID = UA_String_fromChars("Test_Service");
 
     UA_Queue_Data_Type queue_element_2;
     UA_Queue_Data_Type_init(&queue_element_2);
     queue_element_2.client_Identifier = UA_String_fromChars("Test_Client_2");
-    queue_element_2.productId = UA_String_fromChars("Test_Product_2");
+    queue_element_2.orderId = UA_String_fromChars("Test_Product_2");
     queue_element_2.service_UUID = UA_String_fromChars("Test_Service_2");
 
     /*create a new queue element*/
@@ -774,7 +782,8 @@ START_TEST(check_queue_handler){
     UA_ByteString json = UA_String_fromChars(correct_config);
     /*instantiate the warehousemoduletype*/
     UA_service_server_interpreter *swap_server = (UA_service_server_interpreter*) UA_calloc(1, sizeof(UA_service_server_interpreter));
-    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server);
+    UA_Queue_Data queue_data;
+    retval = UA_server_swap_it(new_server, json, warehousemethodCallback, UA_FALSE, &server_running, UA_FALSE, swap_server, &queue_data);
     ck_assert(retval == UA_STATUSCODE_GOOD);
 
     pthread_t threadId;
@@ -785,7 +794,7 @@ START_TEST(check_queue_handler){
     pthread_create(&threadId_test2, NULL, server_terminator, &time);
     while(server_running)
         UA_Server_run_iterate(new_server, NULL);
-    clear_swap_server(swap_server, UA_FALSE, new_server);
+    clear_swap_server(swap_server, UA_FALSE, new_server, &queue_data);
     UA_Server_run_shutdown(new_server);
     UA_Server_delete(new_server);
     free(swap_server);
