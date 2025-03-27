@@ -10,5 +10,5 @@
 Contact
 ========
 
-For further questions about the SWAP-IT software components or the patient zero application,
+For further questions about the SWAP-IT software components or the `Demonstration Scenario <https://github.com/swap-it/demo-scenario>`_,
 please contact Florian Düwel (florian.duewel@fraunhofer.iosb.de) or Andreas Ebner (andreas.ebner@fraunhofer.iosb.de).
