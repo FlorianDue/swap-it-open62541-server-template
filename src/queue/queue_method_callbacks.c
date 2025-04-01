@@ -65,17 +65,10 @@ UA_StatusCode set_queue_element_state_method_callback(UA_Server *server,
                              size_t inputSize, const UA_Variant *input,
                              size_t outputSize, UA_Variant *output){
     UA_Queue_Data *queue_handler_list = (UA_Queue_Data *) methodContext;
-    if (queue_handler_list->set_state)
-        return UA_STATUSCODE_BADWAITINGFORRESPONSE;
-    UA_StatusCode retval = UA_Set_Queue_Element_State_Data_Type_copy((UA_Set_Queue_Element_State_Data_Type *) input->data, &queue_handler_list->element_state);
-    if (retval != UA_STATUSCODE_GOOD)
-        return retval;
-    queue_handler_list->set_state = true;
-    UA_Variant out;
-    UA_Variant_init(&out);
-    UA_Server_readValue(server, queue_handler_list->queue_variable, &out);
-    UA_Variant_clear(&out);
-    return retval;
+    UA_Set_Queue_Element_State_Data_Type set = *(UA_Set_Queue_Element_State_Data_Type*) input->data;
+    UA_Queue_List_Element *current = get_list_element(queue_handler_list, set.orderId, set.service_uuid);
+    current->queue_element.queue_Element_State = set.newState;
+    return UA_STATUSCODE_GOOD;
 }
 
 UA_StatusCode move_queue_element_method_callback(UA_Server *server,
@@ -108,7 +101,6 @@ UA_StatusCode sort_queue_elements_method_callback(UA_Server *server,
     if(queue_handler_list->prioritization)
         return UA_STATUSCODE_BADWAITINGFORRESPONSE;
     UA_StatusCode retval = UA_Array_copy((UA_Change_Queue_Data_Type*) input->data, input->arrayLength, (void**) &queue_handler_list->prioritization_list,  &UA_TYPES_COMMON[UA_TYPES_COMMON_CHANGE_QUEUE_DATA_TYPE]);
-    /*UA_StatusCode retval = UA_Change_Queue_Data_Type_copy((UA_Change_Queue_Data_Type*) input->data, &queue_handler_list->prioritization_list);*/
     if(retval != UA_STATUSCODE_GOOD)
         return retval;
     queue_handler_list->prioritization = true;

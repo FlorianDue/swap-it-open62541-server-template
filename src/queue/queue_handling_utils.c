@@ -9,6 +9,15 @@
 #include "queue_handling_utils.h"
 #include "stdio.h"
 
+UA_Queue_List_Element *get_list_element(UA_Queue_Data *queue_handler_list, UA_String orderId, UA_String serviceUUID){
+    UA_Queue_List_Element *current, *next_element;
+    SLIST_FOREACH_SAFE(current, &queue_handler_list->queue_element_list, next, next_element){
+        if (UA_String_equal(&orderId, &current->queue_element.orderId) && UA_String_equal(&serviceUUID, &current->queue_element.service_UUID))
+            return current;
+    }
+    return current;
+}
+
 void create_queue_from_linked_list(UA_Queue_Data *queue_handler_list){
     UA_Queue_Data_Type temp_queue_list[1000];
     if(queue_handler_list->ll_length != queue_handler_list->queue_size){
@@ -203,7 +212,7 @@ UA_StatusCode move_single_element(UA_Queue_Data *queue_handler_list, UA_Boolean 
     return UA_STATUSCODE_GOOD;
 }
 
-UA_StatusCode changeQueueElementState(UA_Queue_Data *queue_handler_list, UA_Boolean empty_queue){
+/*UA_StatusCode changeQueueElementState(UA_Queue_Data *queue_handler_list, UA_Boolean empty_queue){
     if(empty_queue == false){
         UA_Boolean found_in_queue = false;
         for(int i = 0; i < queue_handler_list->queue_size; i++){
@@ -239,7 +248,7 @@ UA_StatusCode changeQueueElementState(UA_Queue_Data *queue_handler_list, UA_Bool
     UA_Set_Queue_Element_State_Data_Type_init(&queue_handler_list->element_state);
     queue_handler_list->set_state = false;
     return UA_STATUSCODE_GOOD;
-}
+}*/
 
 UA_StatusCode add_queue_to_method_context(UA_Server *server, char *method_node,
                   UA_Queue_Data *method_context, UA_MethodCallback callback){

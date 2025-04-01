@@ -18,24 +18,32 @@ static UA_StatusCode readQueue(UA_Server *server,
     /*empty queue or only single element, or nor value change*/
     if(queue_handler_list->ll_length == queue_handler_list->queue_size || queue_handler_list->ll_length == 0 || queue_handler_list->ll_length == 1){
         if(queue_handler_list->ll_length == 0){
-            if(queue_handler_list->set_state)
-                changeQueueElementState(queue_handler_list, true);
+            /*if(queue_handler_list->set_state)
+                changeQueueElementState(queue_handler_list, true);*/
             if(queue_handler_list->move)
                 move_single_element(queue_handler_list, true);
             if(queue_handler_list->prioritization)
                 sort_elements(queue_handler_list, true);
             //UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_SERVER, "Queue is Empty");
+            UA_DataValue_init(dataValue);
+            UA_Queue_Data_Type empty_type;
+            UA_Queue_Data_Type_init(&empty_type);
+            UA_Variant_setScalarCopy(&dataValue->value, &empty_type, &UA_TYPES_COMMON[UA_TYPES_COMMON_QUEUE_DATA_TYPE]);
+            dataValue->hasValue = true;
             return UA_STATUSCODE_GOOD;
         }
         if(queue_handler_list->ll_length == 1){
-            queue_handler_list->queue = UA_realloc(queue_handler_list->queue, queue_handler_list->ll_length * sizeof(UA_Queue_Data_Type));
+            if(queue_handler_list->queue_size == 0)
+                queue_handler_list->queue = UA_malloc(queue_handler_list->ll_length*sizeof(UA_Queue_Data));
+            else
+                queue_handler_list->queue = UA_realloc(queue_handler_list->queue, queue_handler_list->ll_length * sizeof(UA_Queue_Data_Type));
             memset(queue_handler_list->queue, 0, queue_handler_list->ll_length * sizeof(UA_Queue_Data_Type));
             SLIST_FOREACH(current, &queue_handler_list->queue_element_list, next){
                 UA_Queue_Data_Type_copy(&current->queue_element, &queue_handler_list->queue[queue_handler_list->ll_length - 1]);
                 queue_handler_list->queue[queue_handler_list->ll_length - 1].entry_Number = 1;
                 queue_handler_list->queue_size = queue_handler_list->ll_length;
-                if(queue_handler_list->set_state)
-                    changeQueueElementState(queue_handler_list, false);
+                /*if(queue_handler_list->set_state)
+                    changeQueueElementState(queue_handler_list, false);*/
                 if(queue_handler_list->move)
                     move_single_element(queue_handler_list, true);
                 if(queue_handler_list->prioritization)
@@ -55,8 +63,8 @@ static UA_StatusCode readQueue(UA_Server *server,
     if(queue_handler_list->move)
         move_single_element(queue_handler_list, false);
     /*check if an element needs a state update*/
-    if(queue_handler_list->set_state)
-        changeQueueElementState(queue_handler_list, false);
+    /*if(queue_handler_list->set_state)
+        changeQueueElementState(queue_handler_list, false);*/
     /*check if the queu should be sorted*/
     if(queue_handler_list->prioritization)
         sort_elements(queue_handler_list, false);
@@ -96,8 +104,8 @@ UA_StatusCode init_queue_data(UA_Server *server, UA_Queue_Data *queue_data){
     queue_data->prioritization = false;
     queue_data->priorization_list_size = 0;
     queue_data->prioritization_list = UA_Array_new(0, &UA_TYPES_COMMON[UA_TYPES_COMMON_CHANGE_QUEUE_DATA_TYPE]);
-    queue_data->set_state = false;
-    UA_Set_Queue_Element_State_Data_Type_init(&queue_data->element_state);
+    /*queue_data->set_state = false;
+    UA_Set_Queue_Element_State_Data_Type_init(&queue_data->element_state);*/
     queue_data->ll_length = 0;
     queue_data->queue_size = 0;
     queue_data->queue = UA_Array_new(0, &UA_TYPES_COMMON[UA_TYPES_COMMON_QUEUE_DATA_TYPE]);

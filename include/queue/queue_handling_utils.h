@@ -27,8 +27,8 @@ typedef struct{
  size_t priorization_list_size;
  UA_Boolean move;
  UA_Move_Queue_Data_Type move_element;
- UA_Boolean set_state;
- UA_Set_Queue_Element_State_Data_Type element_state;
+ /*UA_Boolean set_state;
+ UA_Set_Queue_Element_State_Data_Type element_state;*/
  size_t ll_length;
  SLIST_HEAD(, UA_Queue_List_Element) queue_element_list;
  size_t queue_size;
@@ -42,4 +42,5 @@ UA_StatusCode move_single_element(UA_Queue_Data *queue_handler_list, UA_Boolean 
 UA_StatusCode create_linked_list_from_queue(UA_Queue_Data *queue_handler_list);
 void create_queue_from_linked_list(UA_Queue_Data *queue_handler_list);
 UA_StatusCode sort_elements(UA_Queue_Data *queue_handler_list, UA_Boolean empty_queue);
+UA_Queue_List_Element *get_list_element(UA_Queue_Data *queue_handler_list, UA_String orderId, UA_String serviceUUID);
 #endif //QUEUE_METHOD_HANDLER_H
