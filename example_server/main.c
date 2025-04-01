@@ -84,6 +84,7 @@ int main() {
                                              "  module_type: \"WarehouseModuleType\",\n"
                                              "  module_name: \"WarehouseModule\",\n"
                                              "  service_name: \"GetPartsFromWarehouse\",\n"
+                                             "  device_registry:\"opc.tcp://localhost:8000\",\n"
                                              "  Capabilities: [\n"
                                              "        {\n"
                                              "          variable_name: \"test numeric\",\n"
@@ -113,7 +114,7 @@ int main() {
      * it is possible to configure the OPC UA server with a single function call*/
     UA_Queue_Data queue_data;
     memset(&queue_data, 0, sizeof(UA_Queue_Data));
-    UA_server_swap_it(server, conf, warehousemethodCallback, UA_FALSE, &running, UA_FALSE, &swap_server, &queue_data);
+    UA_server_swap_it(server, conf, warehousemethodCallback, UA_FALSE, &running, UA_TRUE, &swap_server, &queue_data);
     UA_ByteString_clear(&conf);
     /*run the server*/
     while(running) {
