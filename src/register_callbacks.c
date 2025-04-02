@@ -55,31 +55,48 @@ void * register_agent(void *input){
     url[inp->Device_registry_url.length] = '\0';
     UA_StatusCode retval = UA_Client_connect(client, url);
     printf("register agent: Client connection to %s is %s \n", url, UA_StatusCode_name(retval));
-    while(retval != UA_STATUSCODE_GOOD) {
-        retval = UA_Client_connect(client, url);
+    if(retval != UA_STATUSCODE_GOOD) {
+        UA_Client_delete(client);
         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
-                       "The client failed to reach the device registry with url: %s and Statuscode %s. Retrying in 1 second", url, UA_StatusCode_name(retval));
-        sleep(1);
+                       "The client failed to reach the device registry with url: %s and Statuscode %s", url, UA_StatusCode_name(retval));
+        UA_String_clear(&inp->Device_registry_url);
+        UA_String_clear(&inp->address);
+        UA_String_clear(&inp->port);
+        UA_String_clear(&inp->moduleType);
+        UA_String_clear(&inp->service_name);
+        free(url);
+        free(inp);
+        return NULL;
     }
-    UA_NodeId service_methodid, service_parent_object_id;
-    UA_NodeId_init(&service_methodid);
-    UA_NodeId_init(&service_parent_object_id);
-    client_get_single_node(client, UA_QUALIFIEDNAME(0, "Add_Agent_Server"), &service_methodid);
-    client_get_single_node(client, UA_QUALIFIEDNAME(0, "PFDLServiceAgents"), &service_parent_object_id);
-    UA_Variant *var = (UA_Variant *) UA_Array_new(4, &UA_TYPES[UA_TYPES_VARIANT]);
-    UA_Variant_setScalarCopy(&var[0], &inp->service_name, &UA_TYPES[UA_TYPES_STRING]);
-    UA_Variant_setScalarCopy(&var[1], &inp->address, &UA_TYPES[UA_TYPES_STRING]);
-    UA_Variant_setScalarCopy(&var[2], &inp->port, &UA_TYPES[UA_TYPES_STRING]);
-    UA_Variant_setScalarCopy(&var[3], &inp->moduleType, &UA_TYPES[UA_TYPES_STRING]);
-    retval = UA_Client_call(client, service_parent_object_id, service_methodid, 4, var, NULL, NULL);
-    while(retval != UA_STATUSCODE_GOOD){
-        UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
-                           "The client failed to call the add agent method %s. Retrying in 1 second", UA_StatusCode_name(retval));
+    else{
+        UA_NodeId service_methodid, service_parent_object_id;
+        UA_NodeId_init(&service_methodid);
+        UA_NodeId_init(&service_parent_object_id);
+        client_get_single_node(client, UA_QUALIFIEDNAME(0, "Add_Agent_Server"), &service_methodid);
+        client_get_single_node(client, UA_QUALIFIEDNAME(0, "PFDLServiceAgents"), &service_parent_object_id);
+        UA_Variant *var = (UA_Variant *) UA_Array_new(4, &UA_TYPES[UA_TYPES_VARIANT]);
+        UA_Variant_setScalarCopy(&var[0], &inp->service_name, &UA_TYPES[UA_TYPES_STRING]);
+        UA_Variant_setScalarCopy(&var[1], &inp->address, &UA_TYPES[UA_TYPES_STRING]);
+        UA_Variant_setScalarCopy(&var[2], &inp->port, &UA_TYPES[UA_TYPES_STRING]);
+        UA_Variant_setScalarCopy(&var[3], &inp->moduleType, &UA_TYPES[UA_TYPES_STRING]);
+
         retval = UA_Client_call(client, service_parent_object_id, service_methodid, 4, var, NULL, NULL);
-        sleep(1);
-
+        if(retval != UA_STATUSCODE_GOOD)
+            UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_SERVER,
+                           "The client failed to call the add agent method %s", UA_StatusCode_name(retval));
+        UA_Array_delete(var, 4, &UA_TYPES[UA_TYPES_VARIANT]);
+        UA_Client_delete(client);
+        UA_String_clear(&inp->Device_registry_url);
+        UA_String_clear(&inp->address);
+        UA_String_clear(&inp->port);
+        UA_String_clear(&inp->moduleType);
+        UA_String_clear(&inp->service_name);
+        UA_NodeId_clear(&service_methodid);
+        UA_NodeId_clear(&service_parent_object_id);
+        free(url);
+        free(inp);
+        return UA_STATUSCODE_GOOD;
     }
-
 }
 
 //register agent callback
