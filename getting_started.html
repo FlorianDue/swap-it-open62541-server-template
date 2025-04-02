@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; SWAP-IT-open62541-server-template 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Information Models" href="informationmodels.html" />
+    <link rel="prev" title="Open62541 Server Template" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SWAP-IT-open62541-server-template
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">Install Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-the-a-simple-server">Start the a simple Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-with-ua-expert">Connect with UA-Expert</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="informationmodels.html">Information Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="json.html">JSON Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swap-it-architecture.html">SWAP-IT Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="related_projects.html">Related-Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SWAP-IT-open62541-server-template</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="toctree-wrapper compound">
+</div>
+<section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>With the open62541-server-template, a swap server can be configured with only a few steps. The example_server directory in the repository contains an example
+implementation of a SWAP-IT server. In addition, the <a class="reference external" href="https://github.com/swap-it/demo-scenario">Demonstration Scenario</a> provides a set of <a class="reference external" href="https://github.com/swap-it/demo-scenario/tree/main/Tutorials">Tutorials</a>,
+which utilize the open62541-server-template, so that these tutorials can be worked through for a better understanding of the SWAP-IT architecture. However, the following only highlights how the server example
+of this tutorial can be executed.</p>
+<section id="install-dependencies">
+<h2>Install Dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
+<section id="open62541-installation">
+<h3>open62541 installation<a class="headerlink" href="#open62541-installation" title="Link to this heading"></a></h3>
+<p>The open62541-server-template requires a local install of the <a class="reference external" href="https://github.com/open62541/open62541">open62541 OPC UA SDK</a> version 1.3.10:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*install dependencies*/</span>
+<span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">update</span>
+<span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">build</span><span class="o">-</span><span class="n">essential</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="n">pkg</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">python3</span>
+
+<span class="cm">/*clone open62541 library and init submodules*/</span>
+<span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/open62541/open62541</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">open62541</span>
+<span class="n">git</span><span class="w"> </span><span class="n">fetch</span><span class="w"> </span><span class="o">--</span><span class="n">all</span><span class="w"> </span><span class="o">--</span><span class="n">tags</span>
+<span class="n">git</span><span class="w"> </span><span class="n">checkout</span><span class="w"> </span><span class="n">tags</span><span class="o">/</span><span class="n">v1</span><span class="mf">.3.10</span><span class="w"> </span><span class="o">-</span><span class="n">b</span><span class="w"> </span><span class="n">v1</span><span class="mf">.3.10</span><span class="o">-</span><span class="n">branch</span>
+<span class="n">git</span><span class="w"> </span><span class="n">submodule</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="o">--</span><span class="n">init</span><span class="w"> </span><span class="o">--</span><span class="n">recursive</span>
+
+<span class="cm">/*install open62541*/</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">build</span>
+<span class="n">cmake</span><span class="w"> </span><span class="o">-</span><span class="n">DBUILD_SHARED_LIBS</span><span class="o">=</span><span class="n">ON</span><span class="w"> </span><span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">RelWithDebInfo</span><span class="w"> </span><span class="o">-</span><span class="n">DUA_NAMESPACE_ZERO</span><span class="o">=</span><span class="n">FULL</span><span class="w"> </span><span class="o">-</span><span class="n">DUA_ENABLE_JSON_ENCODING</span><span class="o">=</span><span class="n">ON</span><span class="w"> </span><span class="o">-</span><span class="n">DUA_MULTITHREADING</span><span class="o">=</span><span class="mi">200</span><span class="w"> </span><span class="p">..</span>
+<span class="n">make</span><span class="w"> </span><span class="n">install</span>
+</pre></div>
+</div>
+</section>
+<section id="open62541-server-template-installation">
+<h3>open62541-server-template installation<a class="headerlink" href="#open62541-server-template-installation" title="Link to this heading"></a></h3>
+<p>Afterwards, the open62541-server-template can be installed:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*clone the swap-it-server-template*/</span>
+<span class="n">git</span><span class="w"> </span><span class="n">clone</span><span class="w"> </span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/FraunhoferIOSB/swap-it-open62541-server-template</span>
+<span class="n">cd</span><span class="w"> </span><span class="n">swap</span><span class="o">-</span><span class="n">it</span><span class="o">-</span><span class="n">open62541</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">template</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">build</span>
+<span class="n">cmake</span><span class="w"> </span><span class="p">..</span>
+<span class="n">make</span><span class="w"> </span><span class="n">install</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-the-a-simple-server">
+<h2>Start the a simple Server<a class="headerlink" href="#start-the-a-simple-server" title="Link to this heading"></a></h2>
+<p>Next, the server provided in this repository can be started:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span><span class="w"> </span><span class="n">swap</span><span class="o">-</span><span class="n">it</span><span class="o">-</span><span class="n">open62541</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">template</span><span class="o">/</span><span class="n">example_server</span><span class="o">/</span><span class="n">custom_information_model</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">build</span>
+<span class="n">cmake</span><span class="w"> </span><span class="p">..</span>
+<span class="n">make</span>
+<span class="p">.</span><span class="o">/</span><span class="n">example_server</span>
+</pre></div>
+</div>
+</section>
+<section id="connect-with-ua-expert">
+<h2>Connect with UA-Expert<a class="headerlink" href="#connect-with-ua-expert" title="Link to this heading"></a></h2>
+<p>To explore the server, connect with it with the UA-Expert Client. The server runs on “opc.tcp://localhost:4840”</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Open62541 Server Template" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="informationmodels.html" class="btn btn-neutral float-right" title="Information Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Fraunhofer IOSB Author (Florian Düwel).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
